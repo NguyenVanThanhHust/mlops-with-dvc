@@ -50,6 +50,23 @@ and
 ```
 dvc pull
 ```
+
+## How to run
+Pull latest data
+```
+dvc pull
+```
+
+Run main program
+```
+python main.py
+```
+
+Check result at
+```
+mlflow server --backend-store-uri mlruns/ --artifacts-destination mlruns/ --port 8000
+```
+
 ## Reference
 
 https://medium.com/thecyphy/mlflow-with-dvc-bd7979969ea5

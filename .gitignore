@@ -3,7 +3,7 @@ __pycache__/
 *.py[codz]
 *$py.class
 minio_data/
-
+mlruns/
 # C extensions
 *.so
 

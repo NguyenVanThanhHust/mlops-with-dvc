@@ -10,24 +10,39 @@ from sklearn.linear_model import ElasticNet
 from urllib.parse import urlparse
 import mlflow
 import mlflow.sklearn
+from dotenv import load_dotenv
 
+# Load environmnt variables from .env file
+load_dotenv()
 import logging
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
+MINIO_ROOT_USER = os.getenv("MINIO_ROOT_USER")
+MINIO_ROOT_PASSWORD = os.getenv("MINIO_ROOT_PASSWORD")
+MINIO_ENDPOINT_URL = ""
+
+storage_options = {
+    'key': MINIO_ROOT_USER,
+    'secret': MINIO_ROOT_PASSWORD,
+    'client_kwargs': {
+        'endpoint_url': MINIO_ENDPOINT_URL
+    }
+}
 
 # Get URL from dvc
 import dvc.api
-path = "data/wine-quality.csv"  # wine-quality.csv.dvc file presence is enough if dvc push to remote storage is done
-repo = "/home/ashish/data_versioning/demo" # git init directory location
-version = "v1" # git tag -a 'v1' -m 'removed 1000 lines' command is required
+path = "data/winequality-red.csv"  # wine-quality.csv.dvc file presence is enough if dvc push to remote storage is done
+# repo = "/home/thanhnv/workspace/mlops-with-dvc" # git init directory location
+version = "v1" 
 
-data_url = dvc.api.get_url(
-    path=path,
-    repo=repo,
-    rev=version
-)
+# data_url = dvc.api.get_url(
+#     path=path,
+#     repo=repo,
+#     rev=version
+# )
 
+# print(data_url)
 def eval_metrics(actual, pred):
     rmse = np.sqrt(mean_squared_error(actual, pred))
     mae = mean_absolute_error(actual, pred)
@@ -40,7 +55,8 @@ if __name__ == "__main__":
     np.random.seed(40)
 
     # read the wine-qualtiy csv file from remote repository
-    data = pd.read_csv(data_url, sep=";")
+    # data = pd.read_csv(data_url, sep=";", storage_options=storage_options)
+    data = pd.read_csv(path, sep=";")
 
     # Split the data into training and test sets. (0.75, 0.25) split.
     train, test = train_test_split(data)
@@ -57,7 +73,6 @@ if __name__ == "__main__":
     with mlflow.start_run():
 
         # Log data params
-        mlflow.log_param('data_url', data_url)
         mlflow.log_param('data_version', version)
         mlflow.log_param('input_rows', data.shape[0])
         mlflow.log_param('input_columns', data.shape[1])
