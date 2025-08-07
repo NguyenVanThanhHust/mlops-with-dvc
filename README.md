@@ -27,13 +27,29 @@ Add storage endpoint
 dvc remote modify s3-data-storage endpointurl http://localhost:9000
 ```
 
-Configgure password and admin
+Configure password and admin
 ```
 dvc remote modify --local s3-data-storage access_key_id your_minio_user_name
 dvc remote modify --local s3-data-storage secret_access_key your_minio_user_password
 ```
 
+Add your data folder
+```
+dvc add data/
+```
 
+Check status
+```
+dvc status
+```
+Push and pull data
+```
+dvc push
+```
+and 
+```
+dvc pull
+```
 ## Reference
 
 https://medium.com/thecyphy/mlflow-with-dvc-bd7979969ea5
